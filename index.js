@@ -55,13 +55,22 @@ class MAL {
               score: tr.find(".score .text").text(),
               posters: tr.find("img").data()
             };
+
+            // get small posters
             const posters = {};
-            const x = out.posters.srcset.split(",");
+            const x = out.posters.srcset.split(", ");
             for (let src in x) {
-              const piece = x[src].trim().split(" ");
+              const piece = x[src].split(" ");
               posters[piece[1]] = piece[0];
             }
             out.posters.srcset = posters;
+
+            // get big poster
+            const posterBase = "https://myanimelist.cdn-dena.com/images/anime"
+            const pos = (out.posters.src.indexOf("anime/")+5);
+            const posterId = out.posters.src.substring(pos, out.posters.src.indexOf(".", pos)+4);
+            out.posterId = posterId;
+            out.posters.big = posterBase + posterId;
             output.push(out);
           }
         });

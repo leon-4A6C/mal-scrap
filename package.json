@@ -1,8 +1,8 @@
 {
-  "name": "mal-scrap",
+  "name": "mal-scrape",
   "version": "1.0.0",
   "main": "index.js",
-  "repository": "https://github.com/leon-4A6C/mal-scrap",
+  "repository": "https://github.com/leon-4A6C/mal-scrape",
   "author": "leon in 't Veld <leon3110l@gmail.com>",
   "license": "MIT",
   "dependencies": {
