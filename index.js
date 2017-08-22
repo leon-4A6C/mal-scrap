@@ -142,7 +142,51 @@ class MAL {
   getDetails(id, type="anime") {
     return this._get(endpoints.details, {}, {type: type, id: id})
       .then(text => {
-        console.log(text);
+        return new Promise((resolve, reject) => {
+          const $ = cheerio.load(text);
+
+          const youtubeHref = $(".video-promotion .video-unit").attr("href") || "";
+
+          const output = {
+            title: $("#contentWrapper h1 [itemProp=name]").text(),
+            score: parseFloat($(".score").text().replace(/\s\s+/g, " ").trim()),
+            rank: parseInt($(".ranked strong").text().replace("#", "")),
+            popularity: parseInt($(".popularity strong").text().replace("#", "")),
+            members: parseInt($(".members strong").text().replace(",", "")),
+            synopsis: $("[itemProp=description]").text(),
+            titles: {
+              english: $(".js-scrollfix-bottom .spaceit_pad").text()
+                                        .trim()
+                                        .replace(/\s\s+/g, ",")
+                                        .split(",")
+                                        .map(x => x.trim())
+                                        .filter(x => x.indexOf("English: ") == 0)
+                                        .map(x => x.substring("English: ".length, x.length)),
+              synonyms: $(".js-scrollfix-bottom .spaceit_pad").text()
+                                        .trim()
+                                        .replace(/\s\s+/g, ",")
+                                        .split(",")
+                                        .map(x => x.trim())
+                                        .filter(x => x.indexOf("Synonyms: ") == 0)
+                                        .map(x => x.substring("Synonyms: ".length, x.length)),
+              japanese: $(".js-scrollfix-bottom .spaceit_pad").text()
+                                        .trim()
+                                        .replace(/\s\s+/g, ",")
+                                        .split(",")
+                                        .map(x => x.trim())
+                                        .filter(x => x.indexOf("Japanese: ") == 0)
+                                        .map(x => x.substring("Japanese: ".length, x.length))
+            },
+            poster: $(".js-scrollfix-bottom img.ac").attr("src"),
+            video: {
+              href: youtubeHref,
+              youtube: youtubeHref.substring(youtubeHref.indexOf("/embed/")+"embed/".length, youtubeHref.indexOf("?"))
+            }
+
+          };
+
+          resolve(output);
+        });
       });
   }
 
