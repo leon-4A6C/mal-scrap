@@ -1,3 +1,4 @@
 {
-  "topAnime": "/topanime.php"
+  "topAnime": "/topanime.php",
+  "topManga": "/topmanga.php"
 }

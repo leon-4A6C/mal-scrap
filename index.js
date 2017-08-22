@@ -9,9 +9,15 @@ class MAL {
   // options can look like this
   // {limit: 50}
   _genOptions(options) {
+    let i = 0;
     let res = "";
-    for (var opt in options) {
-      res += `&${opt}=${options[opt]}`;
+    for (let opt in options) {
+      if (i === 0) {
+        res += `?${opt}=${options[opt]}`;
+      } else {
+        res += `&${opt}=${options[opt]}`;
+      }
+      i++;
     }
     return res;
   }
@@ -33,7 +39,6 @@ class MAL {
   }
 
   _get(path, options, param) {
-    console.log(this.base + this._parsePathParam(path, param) + this._genOptions(options));
     return fetch(this.base + this._parsePathParam(path, param) + this._genOptions(options))
       .then(res => res.text())
   }
@@ -41,43 +46,96 @@ class MAL {
   topAnime(options) {
     return this._get(endpoints.topAnime, options)
       .then(text => {
+        return new Promise((resolve, reject) => {
+          try {
+            const output = [];
 
-        const output = [];
+            const $ = cheerio.load(text);
+            $(".top-ranking-table tbody").children().each(function(i, elem) {
+              const tr = $(this);
+              if (tr.hasClass("ranking-list")) {
+                const out = {
+                  ranking: tr.find(".top-anime-rank-text").text(),
+                  title: tr.find(".di-ib .hoverinfo_trigger").text().replace(/\s\s+/g, ' ').trim(),
+                  href: tr.find(".hoverinfo_trigger").attr("href"),
+                  score: tr.find(".score .text").text(),
+                  posters: tr.find("img").data()
+                };
 
-        const $ = cheerio.load(text);
-        $(".top-ranking-table tbody").children().each(function(i, elem) {
-          const tr = $(this);
-          if (tr.hasClass("ranking-list")) {
-            const out = {
-              ranking: tr.find(".top-anime-rank-text").text(),
-              title: tr.find(".di-ib .hoverinfo_trigger").text().replace(/\s\s+/g, ' ').trim(),
-              href: tr.find(".hoverinfo_trigger").attr("href"),
-              score: tr.find(".score .text").text(),
-              posters: tr.find("img").data()
-            };
+                // get small posters
+                const posters = {};
+                const x = out.posters.srcset.split(", ");
+                for (let src in x) {
+                  const piece = x[src].split(" ");
+                  posters[piece[1]] = piece[0];
+                }
+                out.posters.srcset = posters;
 
-            // get small posters
-            const posters = {};
-            const x = out.posters.srcset.split(", ");
-            for (let src in x) {
-              const piece = x[src].split(" ");
-              posters[piece[1]] = piece[0];
-            }
-            out.posters.srcset = posters;
-
-            // get big poster
-            const posterBase = "https://myanimelist.cdn-dena.com/images/anime"
-            const pos = (out.posters.src.indexOf("anime/")+5);
-            const posterId = out.posters.src.substring(pos, out.posters.src.indexOf(".", pos)+4);
-            out.posterId = posterId;
-            out.posters.big = posterBase + posterId;
-            output.push(out);
+                // get big poster
+                const posterBase = "https://myanimelist.cdn-dena.com/images/anime"
+                const pos = (out.posters.src.indexOf("anime/")+5);
+                const posterId = out.posters.src.substring(pos, out.posters.src.indexOf(".", pos)+4);
+                out.posters.id = posterId;
+                out.posters.big = posterBase + posterId;
+                output.push(out);
+              }
+            });
+            resolve(output);
+          } catch (e) {
+            reject(e);
           }
         });
-        console.log(output);
+      });
+  }
+
+  topManga(options) {
+    return this._get(endpoints.topManga, options)
+      .then(text => {
+        return new Promise((resolve, reject) => {
+          try {
+            const output = [];
+
+            const $ = cheerio.load(text);
+            // foreach element in the tbody of the ranks, strip the data
+            $(".top-ranking-table tbody").children().each(function(i, elem) {
+              const tr = $(this);
+              if (tr.hasClass("ranking-list")) {
+                const out = {
+                  ranking: tr.find(".top-anime-rank-text").text(),
+                  title: tr.find(".detail .hoverinfo_trigger").text().replace(/\s\s+/g, ' ').trim(),
+                  href: tr.find(".hoverinfo_trigger").attr("href"),
+                  score: tr.find(".score .text").text(),
+                  posters: tr.find("img").data()
+                };
+
+                // get small posters
+                const posters = {};
+                const x = out.posters.srcset.split(", ");
+                for (let src in x) {
+                  const piece = x[src].split(" ");
+                  posters[piece[1]] = piece[0];
+                }
+                out.posters.srcset = posters;
+
+                // get big poster
+                const posterBase = "https://myanimelist.cdn-dena.com/images/manga"
+                const pos = (out.posters.src.indexOf("manga/")+5);
+                const posterId = out.posters.src.substring(pos, out.posters.src.indexOf(".", pos)+4);
+                out.posters.id = posterId;
+                out.posters.big = posterBase + posterId;
+                output.push(out);
+              }
+            });
+            resolve(output);
+
+          } catch (e) {
+            reject(e);
+          }
+        });
       });
   }
 }
 
 const client = new MAL();
-client.topAnime();
+client.topAnime()
+  .then(output => console.log(output))
