@@ -50,7 +50,8 @@ class MAL {
       title: tr.find(".detail .hoverinfo_trigger").text().replace(/\s\s+/g, ' ').trim(),
       href: tr.find(".hoverinfo_trigger").attr("href"),
       score: parseFloat(tr.find(".score .text").text()),
-      posters: tr.find("img").data()
+      posters: tr.find("img").data(),
+      type: type
     };
 
     // get small posters
@@ -81,9 +82,11 @@ class MAL {
       episodes: parseInt(info[0].replace(/[a-zA-Z()?]/g, "").trim()) || 0,
       type: info[0].replace(/[0-9()?]/g, "").replace(type == "anime" ? "eps" : "vols", "").trim()
     }
-    out.type = info.type;
     // add the info to the out
     out.info = info;
+
+    // add functions
+    out.getDetails = () => this.getDetails(out.id, out.type);
 
     return out;
   }
@@ -135,6 +138,14 @@ class MAL {
         });
       });
   }
+
+  getDetails(id, type="anime") {
+    return this._get(endpoints.details, {}, {type: type, id: id})
+      .then(text => {
+        console.log(text);
+      });
+  }
+
 }
 
 module.exports = MAL
