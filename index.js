@@ -55,10 +55,11 @@ class MAL {
               const tr = $(this);
               if (tr.hasClass("ranking-list")) {
                 const out = {
-                  ranking: tr.find(".top-anime-rank-text").text(),
+                  id: parseInt(tr.find(".detail .hoverinfo_trigger").attr("id").replace("#area", "")),
+                  ranking: parseInt(tr.find(".top-anime-rank-text").text()),
                   title: tr.find(".detail .hoverinfo_trigger").text().replace(/\s\s+/g, ' ').trim(),
                   href: tr.find(".hoverinfo_trigger").attr("href"),
-                  score: tr.find(".score .text").text(),
+                  score: parseFloat(tr.find(".score .text").text()),
                   posters: tr.find("img").data()
                 };
 
@@ -118,10 +119,11 @@ class MAL {
               const tr = $(this);
               if (tr.hasClass("ranking-list")) {
                 const out = {
-                  ranking: tr.find(".top-anime-rank-text").text(),
+                  id: parseInt(tr.find(".detail .hoverinfo_trigger").attr("id").replace("#area", "")),
+                  ranking: parseInt(tr.find(".top-anime-rank-text").text()),
                   title: tr.find(".detail .hoverinfo_trigger").text().replace(/\s\s+/g, ' ').trim(),
                   href: tr.find(".hoverinfo_trigger").attr("href"),
-                  score: tr.find(".score .text").text(),
+                  score: parseFloat(tr.find(".score .text").text()),
                   posters: tr.find("img").data()
                 };
 
