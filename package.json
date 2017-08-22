@@ -1,6 +1,6 @@
 {
   "name": "mal-scrape",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "main": "index.js",
   "repository": "https://github.com/leon-4A6C/mal-scrape",
   "author": "leon in 't Veld <leon3110l@gmail.com>",
