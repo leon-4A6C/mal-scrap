@@ -39,7 +39,7 @@ class MAL {
   }
 
   topAnime(options) {
-    this._get(endpoints.topAnime, options)
+    return this._get(endpoints.topAnime, options)
       .then(text => {
 
         const output = [];
@@ -50,18 +50,25 @@ class MAL {
           if (tr.hasClass("ranking-list")) {
             const out = {
               ranking: tr.find(".top-anime-rank-text").text(),
-              title: tr.find(".hoverinfo_trigger").text().replace(/\s\s+/g, ' ').trim(),
+              title: tr.find(".di-ib .hoverinfo_trigger").text().replace(/\s\s+/g, ' ').trim(),
               href: tr.find(".hoverinfo_trigger").attr("href"),
-              score: tr.find(".text").text()
+              score: tr.find(".score .text").text(),
+              posters: tr.find("img").data()
             };
+            const posters = {};
+            const x = out.posters.srcset.split(",");
+            for (let src in x) {
+              const piece = x[src].trim().split(" ");
+              posters[piece[1]] = piece[0];
+            }
+            out.posters.srcset = posters;
             output.push(out);
           }
         });
-
         console.log(output);
       });
   }
 }
 
 const client = new MAL();
-client.topAnime({limit: 50});
+client.topAnime();
