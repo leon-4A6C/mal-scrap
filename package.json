@@ -3,6 +3,14 @@
   "version": "1.0.3",
   "main": "index.js",
   "repository": "https://github.com/leon-4A6C/mal-scrape",
+  "keywords": [
+    "MAL",
+    "myanimelist",
+    "my anime list",
+    "anime",
+    "api",
+    "mal-api"
+  ],
   "author": "leon in 't Veld <leon3110l@gmail.com>",
   "license": "MIT",
   "dependencies": {
