@@ -56,7 +56,7 @@ class MAL {
               if (tr.hasClass("ranking-list")) {
                 const out = {
                   ranking: tr.find(".top-anime-rank-text").text(),
-                  title: tr.find(".di-ib .hoverinfo_trigger").text().replace(/\s\s+/g, ' ').trim(),
+                  title: tr.find(".detail .hoverinfo_trigger").text().replace(/\s\s+/g, ' ').trim(),
                   href: tr.find(".hoverinfo_trigger").attr("href"),
                   score: tr.find(".score .text").text(),
                   posters: tr.find("img").data()
@@ -77,6 +77,24 @@ class MAL {
                 const posterId = out.posters.src.substring(pos, out.posters.src.indexOf(".", pos)+4);
                 out.posters.id = posterId;
                 out.posters.big = posterBase + posterId;
+
+                // parse information
+                let info = tr.find(".information").text()
+                  .trim()
+                  .split("\n")
+                  .map(x => x.replace(/\s\s+/g, " "))
+
+                info = {
+                  runtime: info[1].trim(),
+                  members: parseInt(info[2].replace(" members", "").replace(",", "").trim()),
+                  episodes: parseInt(info[0].replace(/[a-zA-Z()]/g, "").trim()),
+                  type: info[0].replace(/[0-9()]/g, "").replace("eps", "").trim()
+                }
+                out.type = info.type;
+                // add the info to the out
+                out.info = info;
+
+                // push it to the output
                 output.push(out);
               }
             });
@@ -96,7 +114,6 @@ class MAL {
             const output = [];
 
             const $ = cheerio.load(text);
-            // foreach element in the tbody of the ranks, strip the data
             $(".top-ranking-table tbody").children().each(function(i, elem) {
               const tr = $(this);
               if (tr.hasClass("ranking-list")) {
@@ -123,11 +140,28 @@ class MAL {
                 const posterId = out.posters.src.substring(pos, out.posters.src.indexOf(".", pos)+4);
                 out.posters.id = posterId;
                 out.posters.big = posterBase + posterId;
+
+                // parse information
+                let info = tr.find(".information").text()
+                  .trim()
+                  .split("\n")
+                  .map(x => x.replace(/\s\s+/g, " "))
+
+                info = {
+                  runtime: info[1].trim(),
+                  members: parseInt(info[2].replace(" members", "").replace(",", "").trim()),
+                  volumes: parseInt(info[0].replace(/[a-zA-Z()?]/g, "").trim()) || 0,
+                  type: info[0].replace(/[0-9()?]/g, "").replace("vols", "").trim()
+                }
+                out.type = info.type;
+                // add the info to the out
+                out.info = info;
+
+                // push it to the output
                 output.push(out);
               }
             });
             resolve(output);
-
           } catch (e) {
             reject(e);
           }
@@ -137,5 +171,5 @@ class MAL {
 }
 
 const client = new MAL();
-client.topAnime()
+client.topManga()
   .then(output => console.log(output))
