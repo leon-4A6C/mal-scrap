@@ -2,7 +2,7 @@ const fetch = require("node-fetch");
 const cheerio = require("cheerio");
 const endpoints = require("./endpoints");
 
-class MAL {
+export default class MAL {
   constructor() {
     this.base = "https://myanimelist.net";
   }
@@ -136,7 +136,3 @@ class MAL {
       });
   }
 }
-
-const client = new MAL();
-client.topAnime()
-  .then(output => console.log(output))
