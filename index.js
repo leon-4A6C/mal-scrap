@@ -147,36 +147,36 @@ class MAL {
 
           const youtubeHref = $(".video-promotion .video-unit").attr("href") || "";
 
-          const output = {
+          let output = {
             title: $("#contentWrapper h1 [itemProp=name]").text(),
             score: parseFloat($(".score").text().replace(/\s\s+/g, " ").trim()),
             rank: parseInt($(".ranked strong").text().replace("#", "")),
             popularity: parseInt($(".popularity strong").text().replace("#", "")),
             members: parseInt($(".members strong").text().replace(",", "")),
             synopsis: $("[itemProp=description]").text(),
-            titles: {
-              english: $(".js-scrollfix-bottom .spaceit_pad").text()
-                                        .trim()
-                                        .replace(/\s\s+/g, ",")
-                                        .split(",")
-                                        .map(x => x.trim())
-                                        .filter(x => x.indexOf("English: ") == 0)
-                                        .map(x => x.substring("English: ".length, x.length)),
-              synonyms: $(".js-scrollfix-bottom .spaceit_pad").text()
-                                        .trim()
-                                        .replace(/\s\s+/g, ",")
-                                        .split(",")
-                                        .map(x => x.trim())
-                                        .filter(x => x.indexOf("Synonyms: ") == 0)
-                                        .map(x => x.substring("Synonyms: ".length, x.length)),
-              japanese: $(".js-scrollfix-bottom .spaceit_pad").text()
-                                        .trim()
-                                        .replace(/\s\s+/g, ",")
-                                        .split(",")
-                                        .map(x => x.trim())
-                                        .filter(x => x.indexOf("Japanese: ") == 0)
-                                        .map(x => x.substring("Japanese: ".length, x.length))
-            },
+            // titles: {
+            //   english: $(".js-scrollfix-bottom .spaceit_pad").text()
+            //                             .trim()
+            //                             .replace(/\s\s+/g, ",")
+            //                             .split(",")
+            //                             .map(x => x.trim())
+            //                             .filter(x => x.indexOf("English: ") == 0)
+            //                             .map(x => x.substring("English: ".length, x.length)),
+            //   synonyms: $(".js-scrollfix-bottom .spaceit_pad").text()
+            //                             .trim()
+            //                             .replace(/\s\s+/g, ",")
+            //                             .split(",")
+            //                             .map(x => x.trim())
+            //                             .filter(x => x.indexOf("Synonyms: ") == 0)
+            //                             .map(x => x.substring("Synonyms: ".length, x.length)),
+            //   japanese: $(".js-scrollfix-bottom .spaceit_pad").text()
+            //                             .trim()
+            //                             .replace(/\s\s+/g, ",")
+            //                             .split(",")
+            //                             .map(x => x.trim())
+            //                             .filter(x => x.indexOf("Japanese: ") == 0)
+            //                             .map(x => x.substring("Japanese: ".length, x.length))
+            // },
             poster: $(".js-scrollfix-bottom img.ac").attr("src"),
             video: {
               href: youtubeHref,
@@ -184,6 +184,36 @@ class MAL {
             }
 
           };
+
+          output = Object.assign({}, output, getInfo());
+
+          function getInfo() {
+            const out = {};
+            $(".js-scrollfix-bottom h2").each((i, elem) => {
+              out[camelize($(elem).text())] = "bla";
+              let info = $(elem).nextUntil("h2");
+              info = info.text()
+                         .replace(/\s\s+/g, " ")
+                         .trim()
+                         .split(/\w*: /g) /* gets the info tested on http://regexr.com/ with this text:
+                                             English: Your Name. Japanese: 君の名は。
+                                             Type: Movie Episodes: 1 Status: Finished Airing Aired: Aug 26, 2016 Producers: Kadokawa Shoten, Toho, Sound Team Don Juan, Lawson HMV Entertainment, Amuse, East Japan Marketing & Communications Licensors: Funimation Studios: CoMix Wave Films Source: Original Genres: Supernatural, Drama, Romance, School Duration: 1 hr. 46 min. Rating: PG-13 - Teens 13 or older
+                                             Score: 9.261 (scored by 276,745 users) 1 indicates a weighted score. Please note that 'Not yet aired' titles are excluded. Ranked: #12 2 based on the top anime page. Please note that 'Not yet aired' and 'R18+' titles are excluded. Popularity: #60 Members: 469,007 Favorites: 22,690*/
+                         .map(x => x.trim()) // trims it again
+                         .filter(x => x !== "")
+              console.log(info);
+
+              // this regex might work: /\w*: /g
+            });
+
+            function camelize(str) {
+              return str.replace(/(?:^\w|[A-Z]|\b\w)/g, function(letter, index) {
+                return index == 0 ? letter.toLowerCase() : letter.toUpperCase();
+              }).replace(/\s+/g, '');
+            }
+
+            return out;
+          }
 
           resolve(output);
         });
