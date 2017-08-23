@@ -268,8 +268,12 @@ class MAL {
     return out;
   }
 
-  search(q, type="anime") {
-    return this._get(endpoints.search, {q: q}, {type}).then(text => {
+  search(q, type="anime", options) {
+    if (typeof type === "object") {
+      options = type;
+      type = "anime";
+    }
+    return this._get(endpoints.search, Object.assign({}, {q}, options), {type}).then(text => {
       return new Promise((resolve, reject) => {
         try {
           const $ = cheerio.load(text);

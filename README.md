@@ -7,6 +7,17 @@ npm install --save mal-scrape
 ```
 
 ## usage
+
+when there is a function that takes options give it an Object with the uri GET params you want to give it, example:
+`
+client.topAnime({limit: 50})
+`
+will become:
+`
+https://myanimelist.net/topanime.php?limit=50
+`
+
+
 ```javascript
 
 const MAL = require("mal-scrape");
@@ -21,8 +32,8 @@ client.topManga()
   .then(output => output[0].getDetails())
   .then(details => console.log(details));
 
-// search for stuff
-client.search("boku no", "anime")
+// search for boku no in anime and get the second page
+client.search("boku no", "anime", {show:50})
   .then(data => console.log(data));
 
 // get the details from the anime with the id 5114

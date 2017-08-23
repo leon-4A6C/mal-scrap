@@ -9,7 +9,8 @@
     "my anime list",
     "anime",
     "api",
-    "mal-api"
+    "mal-api",
+    "myanimelist-api"
   ],
   "author": "leon in 't Veld <leon3110l@gmail.com>",
   "license": "MIT",
