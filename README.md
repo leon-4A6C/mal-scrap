@@ -22,4 +22,5 @@ client.topManga()
 
 ## todo list
 - [x] get top list
-- [ ] get details page
+- [x] get details page
+- [x] search for items
