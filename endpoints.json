@@ -1,5 +1,6 @@
 {
   "topAnime": "/topanime.php",
   "topManga": "/topmanga.php",
-  "details": "/{type}/{id}/"
+  "details": "/{type}/{id}/",
+  "search": "/{type}.php"
 }

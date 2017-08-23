@@ -43,17 +43,8 @@ class MAL {
       .then(res => res.text())
   }
 
-  _parseTopTr(tr, type="anime") {
-    const out = {
-      id: parseInt(tr.find(".detail .hoverinfo_trigger").attr("id").replace("#area", "")),
-      ranking: parseInt(tr.find(".top-anime-rank-text").text()),
-      title: tr.find(".detail .hoverinfo_trigger").text().replace(/\s\s+/g, ' ').trim(),
-      href: tr.find(".hoverinfo_trigger").attr("href"),
-      score: parseFloat(tr.find(".score .text").text()),
-      posters: tr.find("img").data(),
-      type: type
-    };
-
+  // gets posters from poster data
+  _parsePosters(out, type) {
     // get small posters
     const posters = {};
     const x = out.posters.srcset.split(", ");
@@ -69,6 +60,42 @@ class MAL {
     const posterId = out.posters.src.substring(pos, out.posters.src.indexOf(".", pos)+4);
     out.posters.id = posterId;
     out.posters.big = posterBase + posterId;
+
+    // doesn't return anything, because out is 'linked'
+  }
+
+  // gets posters from poster data
+  _getPosters(elem, type) {
+    // get small posters
+    const posters = {};
+    const data = elem.find("img").data()
+    const x = data.srcset.split(", ");
+    for (let src in x) {
+      const piece = x[src].split(" ");
+      posters[piece[1]] = piece[0];
+    }
+    data.srcset = posters;
+
+    // get big poster
+    const posterBase = `https://myanimelist.cdn-dena.com/images/${type}`
+    const pos = (data.src.indexOf(`${type}/`)+type.length);
+    const posterId = data.src.substring(pos, data.src.indexOf(".", pos)+4);
+    data.id = posterId;
+    data.big = posterBase + posterId;
+
+    return data;
+  }
+
+  _parseTopTr(tr, type="anime") {
+    const out = {
+      id: parseInt(tr.find(".detail .hoverinfo_trigger").attr("id").replace("#area", "")),
+      ranking: parseInt(tr.find(".top-anime-rank-text").text()),
+      title: tr.find(".detail .hoverinfo_trigger").text().replace(/\s\s+/g, ' ').trim(),
+      href: tr.find(".hoverinfo_trigger").attr("href"),
+      score: parseFloat(tr.find(".score .text").text()),
+      posters: this._getPosters(tr, type),
+      type: type
+    };
 
     // parse information
     let info = tr.find(".information").text()
@@ -92,57 +119,55 @@ class MAL {
   }
 
   topAnime(options) {
-    return this._get(endpoints.topAnime, options)
-      .then(text => {
-        return new Promise((resolve, reject) => {
-          try {
-            const output = [];
+    return this._get(endpoints.topAnime, options).then(text => {
+      return new Promise((resolve, reject) => {
+        try {
+          const output = [];
 
-            const $ = cheerio.load(text);
-            $(".top-ranking-table tbody").children().each((i, elem) => {
-              const tr = $(elem);
-              if (tr.hasClass("ranking-list")) {
+          const $ = cheerio.load(text);
+          $(".top-ranking-table tbody").children().each((i, elem) => {
+            const tr = $(elem);
+            if (tr.hasClass("ranking-list")) {
 
-                // push it to the output
-                output.push(this._parseTopTr(tr));
-              }
-            });
-            resolve(output);
-          } catch (e) {
-            reject(e);
-          }
-        });
+              // push it to the output
+              output.push(this._parseTopTr(tr));
+            }
+          });
+          resolve(output);
+        } catch (e) {
+          reject(e);
+        }
       });
+    });
   }
 
   topManga(options) {
-    return this._get(endpoints.topManga, options)
-      .then(text => {
-        return new Promise((resolve, reject) => {
-          try {
-            const output = [];
+    return this._get(endpoints.topManga, options).then(text => {
+      return new Promise((resolve, reject) => {
+        try {
+          const output = [];
 
-            const $ = cheerio.load(text);
-            $(".top-ranking-table tbody").children().each((i, elem) => {
-              const tr = $(elem);
-              if (tr.hasClass("ranking-list")) {
+          const $ = cheerio.load(text);
+          $(".top-ranking-table tbody").children().each((i, elem) => {
+            const tr = $(elem);
+            if (tr.hasClass("ranking-list")) {
 
-                // push it to the output
-                output.push(this._parseTopTr(tr, "manga"));
-              }
-            });
-            resolve(output);
-          } catch (e) {
-            reject(e);
-          }
-        });
+              // push it to the output
+              output.push(this._parseTopTr(tr, "manga"));
+            }
+          });
+          resolve(output);
+        } catch (e) {
+          reject(e);
+        }
       });
+    });
   }
 
   getDetails(id, type="anime") {
-    return this._get(endpoints.details, {}, {type: type, id: id})
-      .then(text => {
-        return new Promise((resolve, reject) => {
+    return this._get(endpoints.details, {}, {type: type, id: id}).then(text => {
+      return new Promise((resolve, reject) => {
+        try {
           const $ = cheerio.load(text);
 
           const youtubeHref = $(".video-promotion .video-unit").attr("href") || "";
@@ -215,8 +240,54 @@ class MAL {
           }
 
           resolve(output);
-        });
+        } catch (e) {
+          reject(e);
+        }
       });
+    });
+  }
+
+  _parseSearchItems(elem, type="anime") {
+    const out = {
+      title: elem.find(".hoverinfo_trigger strong").text(),
+      href: elem.find("a.hoverinfo_trigger").attr("href"),
+      id: parseInt(elem.find("a.hoverinfo_trigger").attr("id").replace("sarea", "")),
+      type: type,
+      synopsis: elem.find(".pt4").text().replace("read more.", ""),
+      posters: this._getPosters(elem, type),
+      info: { // WIP
+        type : "TV",
+        score: 10,
+        episodes: 13
+      }
+    }
+
+    this._getPosters(elem, type);
+
+    out.getDetails = () => this.getDetails(out.id, out.type);
+    return out;
+  }
+
+  search(q, type="anime") {
+    return this._get(endpoints.search, {q: q}, {type}).then(text => {
+      return new Promise((resolve, reject) => {
+        try {
+          const $ = cheerio.load(text);
+
+          const output = [];
+
+          $(".js-block-list tbody").children().each((i, elem) => {
+            if (i != 0) {
+              output.push(this._parseSearchItems($(elem), type));
+            }
+          });
+
+          resolve(output);
+        } catch (e) {
+          reject(e);
+        }
+      });
+    });
   }
 
 }
