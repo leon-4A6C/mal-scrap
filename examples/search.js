@@ -1,5 +1,6 @@
 const MAL = require("../");
 const client = new MAL();
 
-client.search("boku no", "manga")
+// search for stuff
+client.search("boku no", "anime")
   .then(data => console.log(data));

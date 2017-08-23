@@ -255,11 +255,11 @@ class MAL {
       type: type,
       synopsis: elem.find(".pt4").text().replace("read more.", ""),
       posters: this._getPosters(elem, type),
-      info: { // WIP
-        type : "TV",
-        score: 10,
-        episodes: 13
-      }
+      // info: { // WIP
+      //   type : "TV",
+      //   score: 10,
+      //   episodes: 13
+      // }
     }
 
     this._getPosters(elem, type);

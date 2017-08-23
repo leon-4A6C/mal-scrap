@@ -4,6 +4,6 @@ const client = new MAL();
 client.topAnime({limit: 50})
   .then(output => console.log(output))
 
-client.topManga({limit: 50})
+client.topManga()
   .then(output => output[0].getDetails())
   .then(details => console.log(details))
