@@ -5,5 +5,5 @@ const client = new MAL();
 //   .then(output => output[0].getDetails())
 //   .then(details => console.log(details))
 
-client.getDetails(32281, "anime")
+client.getDetails(5114)
   .then(details => console.log(details))
