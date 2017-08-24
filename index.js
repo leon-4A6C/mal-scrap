@@ -82,6 +82,7 @@ class MAL {
     const posterId = data.src.substring(pos, data.src.indexOf(".", pos)+4);
     data.id = posterId;
     data.big = posterBase + posterId;
+    data.huge = posterBase + posterId.replace(".", "l.");
 
     return data;
   }
@@ -184,7 +185,8 @@ class MAL {
             video: {
               href: youtubeHref,
               youtube: youtubeHref.substring(youtubeHref.indexOf("/embed/")+"/embed/".length, youtubeHref.indexOf("?"))
-            }
+            },
+            url: $("#horiznav_nav ul").children().find("a").attr("href")
 
           };
 

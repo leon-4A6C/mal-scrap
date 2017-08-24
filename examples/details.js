@@ -6,7 +6,7 @@ client.topManga()
   .then(output => output[0].getDetails())
   .then(details => console.log(details));
 
-client.getDetails(5114) // anime is the default type
+client.getDetails(32281) // anime is the default type
   .then(details => console.log(details))
 
 // get the details of an searched item
