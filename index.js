@@ -165,6 +165,58 @@ class MAL {
     });
   }
 
+  _getPictures(baseUrl) {
+    const url = baseUrl+"/pics";
+    return fetch(url)
+      .then(data => data.text())
+      .then(html => {
+        return new Promise((resolve, reject) => {
+          try {
+            const $ = cheerio.load(html);
+            const output = [];
+            $(".js-picture-gallery").each((i, elem) => {
+              output.push({
+                huge: $(elem).attr("href"),
+                big: $(elem).attr("href").replace("l.", ".")
+              })
+            });
+            resolve(output);
+          } catch (e) {
+            reject(e);
+          }
+        });
+      });
+  }
+
+  _getVideos(baseUrl) {
+    const url = baseUrl+"/video";
+    return fetch(url)
+      .then(data => data.text())
+      .then(html => {
+        return new Promise((resolve, reject) => {
+          try {
+            const $ = cheerio.load(html);
+            const output = [];
+            $(".video-list-outer .video-list").each((i, elem) => {
+              elem = $(elem);
+              const youtubeHref = $(elem).attr("href");
+              const out = {
+                href: youtubeHref,
+                youtube: youtubeHref.substring(youtubeHref.indexOf("/embed/")+"/embed/".length, youtubeHref.indexOf("?")),
+                thumbnail: elem.find(".thumbs").data()
+              };
+              out.animeId = out.thumbnail.animeId;
+              delete out.thumbnail.pinNoHover; // unneeded data, is for the site or something
+              output.push(out);
+            });
+            resolve(output);
+          } catch (e) {
+            reject(e);
+          }
+        });
+      });
+  }
+
   getDetails(id, type="anime") {
     return this._get(endpoints.details, {}, {type: type, id: id}).then(text => {
       return new Promise((resolve, reject) => {
@@ -191,6 +243,10 @@ class MAL {
           };
 
           output = Object.assign({}, output, getInfo());
+          output.getPictures = () => this._getPictures(output.url);
+          output.getPics = () => this._getPictures(output.url);
+          output.getImages = () => this._getPictures(output.url);
+          output.getVideos = () => this._getVideos(output.url);
 
           function getInfo() {
             const out = {};
