@@ -47,4 +47,5 @@ client.getDetails(5114, "anime")
 ## todo list
 - [x] get top list
 - [x] get details page
-- [x] search for items
+- [x] get images from anime and manga
+- [x] get videos from anime and manga

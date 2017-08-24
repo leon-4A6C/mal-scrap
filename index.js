@@ -115,8 +115,17 @@ class MAL {
 
     // add functions
     out.getDetails = () => this.getDetails(out.id, out.type);
+    this._addFunctionsToOutput(out);
 
     return out;
+  }
+
+  _addFunctionsToOutput(output) {
+    // add functions
+    output.getPictures = () => this._getPictures(output.href);
+    output.getPics = () => this._getPictures(output.href); // added a synonym
+    output.getImages = () => this._getPictures(output.href); // added a synonym
+    output.getVideos = () => this._getVideos(output.href);
   }
 
   topAnime(options) {
@@ -205,7 +214,7 @@ class MAL {
                 youtube: youtubeHref.substring(youtubeHref.indexOf("/embed/")+"/embed/".length, youtubeHref.indexOf("?")),
                 thumbnail: elem.find(".thumbs").data()
               };
-              out.animeId = out.thumbnail.animeId;
+              out.id = out.thumbnail.animeId;
               delete out.thumbnail.pinNoHover; // unneeded data, is for the site or something
               output.push(out);
             });
@@ -238,15 +247,13 @@ class MAL {
               href: youtubeHref,
               youtube: youtubeHref.substring(youtubeHref.indexOf("/embed/")+"/embed/".length, youtubeHref.indexOf("?"))
             },
-            url: $("#horiznav_nav ul").children().find("a").attr("href")
+            href: $("#horiznav_nav ul").children().find("a").attr("href")
 
           };
 
           output = Object.assign({}, output, getInfo());
-          output.getPictures = () => this._getPictures(output.url);
-          output.getPics = () => this._getPictures(output.url);
-          output.getImages = () => this._getPictures(output.url);
-          output.getVideos = () => this._getVideos(output.url);
+
+          this._addFunctionsToOutput(output);
 
           function getInfo() {
             const out = {};
@@ -320,7 +327,7 @@ class MAL {
       // }
     }
 
-    this._getPosters(elem, type);
+    this._addFunctionsToOutput(out);
 
     out.getDetails = () => this.getDetails(out.id, out.type);
     return out;
