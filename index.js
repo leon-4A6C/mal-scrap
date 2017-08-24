@@ -2,9 +2,19 @@ const fetch = require("node-fetch");
 const cheerio = require("cheerio");
 const endpoints = require("./endpoints");
 
+
+/**
+ * MAL class
+ * @class
+ * @classdesc the class that has all the functionality stuff
+ */
 class MAL {
-  constructor() {
-    this.base = "https://myanimelist.net";
+  /**
+   * constructor, instantiates the object
+   * @param {string} url - the base url to use, default: https://myanimelist.net
+   */
+  constructor(url) {
+    this.base = url || "https://myanimelist.net";
   }
   // options can look like this
   // {limit: 50}
@@ -127,7 +137,11 @@ class MAL {
     output.getImages = () => this._getPictures(output.href); // added a synonym
     output.getVideos = () => this._getVideos(output.href);
   }
-
+/**
+ * get 50 of the top anime
+ * @param {object} options - the GET options to give to the page
+ * @returns {promise} - a promise with the data
+ */
   topAnime(options) {
     return this._get(endpoints.topAnime, options).then(text => {
       return new Promise((resolve, reject) => {
@@ -150,7 +164,11 @@ class MAL {
       });
     });
   }
-
+  /**
+   * get 50 of the top manga
+   * @param {object} options - the GET options to give to the page
+   * @returns {promise} - a promise with the data
+   */
   topManga(options) {
     return this._get(endpoints.topManga, options).then(text => {
       return new Promise((resolve, reject) => {
@@ -172,6 +190,29 @@ class MAL {
         }
       });
     });
+  }
+
+  /**
+   * get a top 50
+   * @param {string} type - the type of the top list: anime or manga
+   * @param {object} options - the GET options to give to the page
+   * @returns {promise} - a promise with the data
+   */
+  top(type="anime", options) {
+    if (typeof type == "object") {
+      options = type;
+      type = "anime";
+    }
+    switch (type) {
+      case "anime":
+        return this.topAnime(options);
+        break;
+      case "manga":
+        return this.topManga(options);
+        break;
+      default:
+        throw new Promise((resolve, reject) => reject("wrong type!"));;
+    }
   }
 
   _getPictures(baseUrl) {
@@ -225,7 +266,12 @@ class MAL {
         });
       });
   }
-
+  /**
+   * get the details of an anime or manga
+   * @param {number} id - the id of the anime or manga
+   * @param {string} type - the type of the thing you want the details from: anime or manga
+   * @returns {promise} - a promise with the data
+   */
   getDetails(id, type="anime") {
     return this._get(endpoints.details, {}, {type: type, id: id}).then(text => {
       return new Promise((resolve, reject) => {
@@ -332,7 +378,13 @@ class MAL {
     out.getDetails = () => this.getDetails(out.id, out.type);
     return out;
   }
-
+  /**
+   * search for anime or manga, might also work for other things but I didn't test that
+   * @param {number} q - the query/search terms
+   * @param {string} type - the type of the thing you want to search: anime or manga
+   * @param {string} options - the GET options to give to the page
+   * @returns {promise} - a promise with the data
+   */
   search(q, type="anime", options) {
     if (typeof type === "object") {
       options = type;
