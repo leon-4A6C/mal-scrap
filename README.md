@@ -38,7 +38,17 @@ client.search("boku no", "anime", {show:50})
 
 // get the details from the anime with the id 5114
 client.getDetails(5114, "anime")
-  .then(details => console.log(details))
+  .then(details => console.log(details));
+
+// get videos from topAnime or topManga
+client.topAnime()
+  .then(anime => anime[0].getVideos())
+  .then(videos => console.log(videos));
+
+// get images from searches
+client.search("boku no")
+  .then(data => data[0].getImages())
+  .then(images => console.log(images));
 
 ```
 

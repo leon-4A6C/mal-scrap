@@ -12,6 +12,6 @@ client.search("boku no", "anime")
   .then(videos => console.log(videos));
 
 // get videos from topAnime or topManga
-client.topManga()
+client.topAnime()
   .then(anime => anime[0].getVideos())
   .then(videos => console.log(videos));
