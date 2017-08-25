@@ -8,7 +8,7 @@ client.topManga()
 
 client.getDetails(32281) // anime is the default type
   .then(details => details.getVideos())
-  .then(pics => console.log(pics))
+  .then(videos => console.log(videos))
 
 // get the details of an searched item
 client.search("boku no", "anime")

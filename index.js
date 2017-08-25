@@ -9,6 +9,111 @@ const endpoints = require("./endpoints");
  * @classdesc the class that has all the functionality stuff
  */
 class MAL {
+
+
+  /**
+   * @typedef Posters
+   * @type {Object}
+   * @property {string} src - the src to the item of the top page.
+   * @property {Object} srcset - the srcset of the item (an object with 2 sizes).
+   * @property {string} id - the picture id of the img.
+   * @property {string} big - the poster in an big size.
+   * @property {string} huge - the poster in an huge size.
+   */
+
+   /**
+    * @typedef TopInfo
+    * @type {Object}
+    * @property {string} runtime - the runtime of the item.
+    * @property {number} members - the members of the item.
+    * @property {number} episodes - the amount of episodes of an item.
+    * @property {number} type - the type of an item. this is different from the other type.
+    */
+
+  /**
+   * @typedef Top
+   * @type {Object}
+   * @property {number} id - the id of the item.
+   * @property {number} ranking - the ranking of the item the list.
+   * @property {string} title - the title of the item.
+   * @property {string} href - the link to the item.
+   * @property {number} score - the score of the item.
+   * @property {Posters} posters - the poster of the item in different sizes.
+   * @property {string} type - the type of the item.
+   * @property {TopInfo} info - the basic info of the item.
+   * @property {function} getDetails - returns a Promise with the details.
+   * @property {function} getPictures - returns a Promise with the pictures.
+   * @property {function} getPics - returns a Promise with the pictures.
+   * @property {function} getImages - returns a Promise with the pictures.
+   * @property {function} getVideos - returns a Promise with the videos.
+   */
+
+  /**
+   * @typedef DetailsInformation
+   * @type {Object}
+   * @property {string} type - the type of an item. this is different from the other type.
+   * @property {string} episodes - the amount of episodes of an item. this will become an int.
+   * @property {string} status - the status of an item: finished airing and that kind of stuff.
+   * @property {string} aired - from when to when it aired.
+   * @property {string} premiered - when it premiered.
+   * @property {string} broadcast - what day and time it broadcasts.
+   * @property {string} producers - the producers. this will become an array.
+   * @property {string} licensors - the licensors. this will become an array.
+   * @property {string} studios - the studios. this will become an array.
+   * @property {string} source - the source.
+   * @property {string} duration - the duration. how long an episode is.
+   * @property {string} rating - the rating, pg-13 or something.
+   */
+
+  /**
+   * @typedef DetailsStatistics
+   * @type {Object}
+   * @property {string} score - the scrore of the item.
+   * @property {string} ranked - the rank of the item.
+   * @property {string} popularity - the popularity of the item.
+   * @property {string} members - the amount of members of the item.
+   * @property {string} favorites - the amount of favorites of the item.
+   */
+
+  /**
+   * @typedef Details
+   * @type {Object}
+   * @property {string} title - the title of the item.
+   * @property {string} type - the type of the item.
+   * @property {number} score - the score of the item.
+   * @property {number} rank - the rank of the item.
+   * @property {number} popularity - the popularity of the item.
+   * @property {number} members - the members of the item.
+   * @property {string} synopsis - the synopsis of the item.
+   * @property {string} poster - the poster of the item.
+   * @property {Object} video - the video on the details page of the item. contains the href to the embeded youtube thing and a youtube video id.
+   * @property {string} href - the link to the items page.
+   * @property {Object} alternativeTitles - the alternative titles of the item.
+   * @property {DetailsInformation} information - detailed info of the item.
+   * @property {DetailsStatistics} statistics - statistics of the item
+   * @property {function} getPictures - returns a Promise with the pictures.
+   * @property {function} getPics - returns a Promise with the pictures.
+   * @property {function} getImages - returns a Promise with the pictures.
+   * @property {function} getVideos - returns a Promise with the videos.
+   */
+
+  /**
+   * @typedef SearchItem
+   * @type {Object}
+   * @property {string} title - the title of the item.
+   * @property {string} href - the link to the items page.
+   * @property {number} id - the score of the item.
+   * @property {string} type - the type of the item.
+   * @property {string} synopsis - a short synopsis of the item.
+   * @property {Posters} posters - different sizes of the poster.
+   * @property {function} getPictures - returns a Promise with the pictures.
+   * @property {function} getPics - returns a Promise with the pictures.
+   * @property {function} getImages - returns a Promise with the pictures.
+   * @property {function} getVideos - returns a Promise with the videos.
+   * @property {function} getDetails - returns a Promise with the details.
+   */
+
+
   /**
    * constructor, instantiates the object
    * @param {string} url - the base url to use, default: https://myanimelist.net
@@ -140,7 +245,7 @@ class MAL {
 /**
  * get 50 of the top anime
  * @param {object} options - the GET options to give to the page
- * @returns {promise} - a promise with the data
+ * @returns {Promise<Top>} - a promise with the data
  */
   topAnime(options) {
     return this._get(endpoints.topAnime, options).then(text => {
@@ -167,7 +272,7 @@ class MAL {
   /**
    * get 50 of the top manga
    * @param {object} options - the GET options to give to the page
-   * @returns {promise} - a promise with the data
+   * @returns {Promise<Top>} - a promise with the data
    */
   topManga(options) {
     return this._get(endpoints.topManga, options).then(text => {
@@ -196,7 +301,7 @@ class MAL {
    * get a top 50
    * @param {string} type - the type of the top list: anime or manga
    * @param {object} options - the GET options to give to the page
-   * @returns {promise} - a promise with the data
+   * @returns {Promise<Top>} - a promise with the data
    */
   top(type="anime", options) {
     if (typeof type == "object") {
@@ -249,7 +354,7 @@ class MAL {
             const output = [];
             $(".video-list-outer .video-list").each((i, elem) => {
               elem = $(elem);
-              const youtubeHref = $(elem).attr("href");
+              const youtubeHref = $(elem).attr("href") || "";
               const out = {
                 href: youtubeHref,
                 youtube: youtubeHref.substring(youtubeHref.indexOf("/embed/")+"/embed/".length, youtubeHref.indexOf("?")),
@@ -270,7 +375,7 @@ class MAL {
    * get the details of an anime or manga
    * @param {number} id - the id of the anime or manga
    * @param {string} type - the type of the thing you want the details from: anime or manga
-   * @returns {promise} - a promise with the data
+   * @returns {Promise<Details>} - a promise with the data
    */
   getDetails(id, type="anime") {
     return this._get(endpoints.details, {}, {type: type, id: id}).then(text => {
@@ -383,7 +488,7 @@ class MAL {
    * @param {number} q - the query/search terms
    * @param {string} type - the type of the thing you want to search: anime or manga
    * @param {string} options - the GET options to give to the page
-   * @returns {promise} - a promise with the data
+   * @returns {Promise.<SearchItem[]>} - a promise with the data
    */
   search(q, type="anime", options) {
     if (typeof type === "object") {
