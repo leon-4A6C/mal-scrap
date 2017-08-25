@@ -1,5 +1,5 @@
 {
-  "name": "mal-scrape",
+  "name": "react-native-mal-scrape",
   "version": "1.0.9",
   "main": "index.js",
   "repository": "https://github.com/leon-4A6C/mal-scrape",
@@ -15,7 +15,6 @@
   "author": "leon in 't Veld <leon3110l@gmail.com>",
   "license": "MIT",
   "dependencies": {
-    "cheerio": "^1.0.0-rc.2",
-    "node-fetch": "^1.7.2"
+    "react-native-cheerio": "^1.0.0-rc.3"
   }
 }
