@@ -93,33 +93,34 @@ client.search("boku no")
 ## MAL
 the class that has all the functionality stuff
 
-**Kind**: global class  
+**Kind**: global class
 
 * [MAL](#MAL)
-    * [new MAL(url)](#new_MAL_new)
+    * [new MAL(prefix, url)](#new_MAL_new)
     * [.topAnime(options)](#MAL+topAnime) ⇒ [<code>Promise.&lt;Top&gt;</code>](#Top)
     * [.topManga(options)](#MAL+topManga) ⇒ [<code>Promise.&lt;Top&gt;</code>](#Top)
     * [.top(type, options)](#MAL+top) ⇒ [<code>Promise.&lt;Top&gt;</code>](#Top)
     * [.getDetails(id, type)](#MAL+getDetails) ⇒ [<code>Promise.&lt;Details&gt;</code>](#Details)
-    * [.search(q, type, options)](#MAL+search) ⇒ <code>Promise.&lt;Array.&lt;[SearchItem](#SearchItem)&gt;&gt;</code>
+    * [.search(q, type, options)](#MAL+search) ⇒ <code>Promise.&lt;Array.&lt;SearchItem&gt;&gt;</code>
 
 <a name="new_MAL_new"></a>
 
-### new MAL(url)
+### new MAL(prefix, url)
 constructor, instantiates the object
 
 
 | Param | Type | Description |
 | --- | --- | --- |
+| prefix | <code>strign</code> | it uses this in front of the request, you could use this to prevent cors errors in browsers |
 | url | <code>string</code> | the base url to use, default: https://myanimelist.net |
 
 <a name="MAL+topAnime"></a>
 
-### mal.topAnime(options) ⇒ [<code>Promise.&lt;Top&gt;</code>](#Top)
+### maL.topAnime(options) ⇒ [<code>Promise.&lt;Top&gt;</code>](#Top)
 get 50 of the top anime
 
-**Kind**: instance method of [<code>MAL</code>](#MAL)  
-**Returns**: [<code>Promise.&lt;Top&gt;</code>](#Top) - - a promise with the data  
+**Kind**: instance method of [<code>MAL</code>](#MAL)
+**Returns**: [<code>Promise.&lt;Top&gt;</code>](#Top) - - a promise with the data
 
 | Param | Type | Description |
 | --- | --- | --- |
@@ -127,11 +128,11 @@ get 50 of the top anime
 
 <a name="MAL+topManga"></a>
 
-### mal.topManga(options) ⇒ [<code>Promise.&lt;Top&gt;</code>](#Top)
+### maL.topManga(options) ⇒ [<code>Promise.&lt;Top&gt;</code>](#Top)
 get 50 of the top manga
 
-**Kind**: instance method of [<code>MAL</code>](#MAL)  
-**Returns**: [<code>Promise.&lt;Top&gt;</code>](#Top) - - a promise with the data  
+**Kind**: instance method of [<code>MAL</code>](#MAL)
+**Returns**: [<code>Promise.&lt;Top&gt;</code>](#Top) - - a promise with the data
 
 | Param | Type | Description |
 | --- | --- | --- |
@@ -139,11 +140,11 @@ get 50 of the top manga
 
 <a name="MAL+top"></a>
 
-### mal.top(type, options) ⇒ [<code>Promise.&lt;Top&gt;</code>](#Top)
+### maL.top(type, options) ⇒ [<code>Promise.&lt;Top&gt;</code>](#Top)
 get a top 50
 
-**Kind**: instance method of [<code>MAL</code>](#MAL)  
-**Returns**: [<code>Promise.&lt;Top&gt;</code>](#Top) - - a promise with the data  
+**Kind**: instance method of [<code>MAL</code>](#MAL)
+**Returns**: [<code>Promise.&lt;Top&gt;</code>](#Top) - - a promise with the data
 
 | Param | Type | Default | Description |
 | --- | --- | --- | --- |
@@ -152,11 +153,11 @@ get a top 50
 
 <a name="MAL+getDetails"></a>
 
-### mal.getDetails(id, type) ⇒ [<code>Promise.&lt;Details&gt;</code>](#Details)
+### maL.getDetails(id, type) ⇒ [<code>Promise.&lt;Details&gt;</code>](#Details)
 get the details of an anime or manga
 
-**Kind**: instance method of [<code>MAL</code>](#MAL)  
-**Returns**: [<code>Promise.&lt;Details&gt;</code>](#Details) - - a promise with the data  
+**Kind**: instance method of [<code>MAL</code>](#MAL)
+**Returns**: [<code>Promise.&lt;Details&gt;</code>](#Details) - - a promise with the data
 
 | Param | Type | Default | Description |
 | --- | --- | --- | --- |
@@ -165,11 +166,11 @@ get the details of an anime or manga
 
 <a name="MAL+search"></a>
 
-### mal.search(q, type, options) ⇒ <code>Promise.&lt;Array.&lt;[SearchItem](#SearchItem)&gt;&gt;</code>
+### maL.search(q, type, options) ⇒ <code>Promise.&lt;Array.&lt;SearchItem&gt;&gt;</code>
 search for anime or manga, might also work for other things but I didn't test that
 
-**Kind**: instance method of [<code>MAL</code>](#MAL)  
-**Returns**: <code>Promise.&lt;Array.&lt;[SearchItem](#SearchItem)&gt;&gt;</code> - - a promise with the data  
+**Kind**: instance method of [<code>MAL</code>](#MAL)
+**Returns**: <code>Promise.&lt;Array.&lt;SearchItem&gt;&gt;</code> - - a promise with the data
 
 | Param | Type | Default | Description |
 | --- | --- | --- | --- |
@@ -180,7 +181,7 @@ search for anime or manga, might also work for other things but I didn't test th
 <a name="Posters"></a>
 
 ## Posters : <code>Object</code>
-**Kind**: global typedef  
+**Kind**: global typedef
 **Properties**
 
 | Name | Type | Description |
@@ -194,7 +195,7 @@ search for anime or manga, might also work for other things but I didn't test th
 <a name="TopInfo"></a>
 
 ## TopInfo : <code>Object</code>
-**Kind**: global typedef  
+**Kind**: global typedef
 **Properties**
 
 | Name | Type | Description |
@@ -207,7 +208,7 @@ search for anime or manga, might also work for other things but I didn't test th
 <a name="Top"></a>
 
 ## Top : <code>Object</code>
-**Kind**: global typedef  
+**Kind**: global typedef
 **Properties**
 
 | Name | Type | Description |
@@ -229,7 +230,7 @@ search for anime or manga, might also work for other things but I didn't test th
 <a name="DetailsInformation"></a>
 
 ## DetailsInformation : <code>Object</code>
-**Kind**: global typedef  
+**Kind**: global typedef
 **Properties**
 
 | Name | Type | Description |
@@ -250,7 +251,7 @@ search for anime or manga, might also work for other things but I didn't test th
 <a name="DetailsStatistics"></a>
 
 ## DetailsStatistics : <code>Object</code>
-**Kind**: global typedef  
+**Kind**: global typedef
 **Properties**
 
 | Name | Type | Description |
@@ -264,7 +265,7 @@ search for anime or manga, might also work for other things but I didn't test th
 <a name="Details"></a>
 
 ## Details : <code>Object</code>
-**Kind**: global typedef  
+**Kind**: global typedef
 **Properties**
 
 | Name | Type | Description |
@@ -290,7 +291,7 @@ search for anime or manga, might also work for other things but I didn't test th
 <a name="SearchItem"></a>
 
 ## SearchItem : <code>Object</code>
-**Kind**: global typedef  
+**Kind**: global typedef
 **Properties**
 
 | Name | Type | Description |
